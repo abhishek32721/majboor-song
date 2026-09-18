@@ -287,15 +287,7 @@
 
 <button id="musicBtn" title="Music on/off">🔈</button>
 
-<!--
-  APNA GAANA ADD KARNE KE LIYE:
-  1. Apna wahi mp3 file jo tumne diya tha, is HTML file ke EXACT SAME folder me rakho
-     (filename neeche wale src me already daala hai, bilkul waise hi rakhna — rename mat karna,
-     ya rename karo to neeche src bhi wahi naam kar dena).
-  2. Copyright ki wajah se main khud gaana file yahan copy/host nahi kar sakta — tumhare
-     paas already file hai, is code ko sirf usi file ke saath kaam karne ke liye wire kiya hai.
--->
-<audio id="bgm" src="vidssave_com_Aapka_Hi_Kehna_Banta_-_Slowed_Reverb____Sheheryar_Rehan___Zoha_Waseem____Gs_Lyrics_128KBPS.mp3" preload="auto"></audio>
+<audio id="bgm" src="Aapka Hi Kehna Banta.mp3" preload="auto"></audio>
 
 <script>
   // ---------- floating hearts background ----------
@@ -386,13 +378,10 @@
   const startBtn = document.getElementById('startBtn');
   let musicOn = true;
 
-  // Original video me gaana isi mp3 ke ~2:12 (132 seconds) waale hisse se shuru hota tha.
-  // (Yeh best-estimate hai — track ek slowed+reverb loop hai isliye 1-2 second ka farq
-  // sunne me shayad pata bhi na chale. Agar tumhe alag point chahiye to yahan number badal do.)
-  const SONG_START_SECONDS = 132;
+  // Gaana bilkul shuru se chalega
+  const SONG_START_SECONDS = 0;
 
   function playMusic(){
-    // pehli baar play karte waqt hi clip point pe jump karo
     if(bgm.currentTime < 1){
       try{ bgm.currentTime = SONG_START_SECONDS; }catch(e){}
     }
@@ -401,13 +390,11 @@
       musicBtn.classList.add('spinning');
       musicOn = true;
     }).catch(()=>{
-      // browser blocked autoplay; user can tap the music button
       musicBtn.textContent = '🔈';
       musicOn = false;
     });
   }
 
-  // jab metadata load ho jaaye tabhi currentTime set karna reliable hota hai
   bgm.addEventListener('loadedmetadata', ()=>{
     if(bgm.currentTime < 1){
       try{ bgm.currentTime = SONG_START_SECONDS; }catch(e){}
@@ -416,7 +403,7 @@
 
   startBtn.addEventListener('click', ()=>{
     startOverlay.style.display='none';
-    playMusic(); // starts once, keeps playing (not restarted) across every card
+    playMusic();
   });
 
   musicBtn.addEventListener('click', ()=>{
