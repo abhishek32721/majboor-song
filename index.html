@@ -286,6 +286,7 @@
 </div>
 
 <button id="musicBtn" title="Music on/off">🔈</button>
+<div id="musicDebug" style="position:fixed; bottom:80px; right:20px; max-width:240px; background:#fff; color:#c23a5e; font-size:12px; padding:8px 12px; border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.2); display:none; z-index:31;"></div>
 
 <!--
   Gaana GitHub repo me isi naam se already maujood hai: Aapkahikehnabanta.mp3
@@ -381,7 +382,20 @@
   const musicBtn = document.getElementById('musicBtn');
   const startOverlay = document.getElementById('startOverlay');
   const startBtn = document.getElementById('startBtn');
+  const musicDebug = document.getElementById('musicDebug');
   let musicOn = true;
+
+  function showDebug(msg){
+    musicDebug.textContent = msg;
+    musicDebug.style.display = 'block';
+  }
+
+  // agar mp3 file load hi nahi ho paayi (galat naam, 404, ya format issue), yahan dikh jaayega
+  bgm.addEventListener('error', ()=>{
+    const codes = {1:'load rok diya gaya',2:'network error',3:'file decode nahi ho payi (corrupt/format)',4:'file mili hi nahi (galat naam/path, 404)'};
+    const code = bgm.error ? bgm.error.code : 0;
+    showDebug('Gaana load nahi ho paya: ' + (codes[code] || 'unknown error') + '. Filename/path check karo.');
+  });
 
   // Original video me gaana isi mp3 ke ~2:12 (132 seconds) waale hisse se shuru hota tha.
   // (Yeh best-estimate hai — track ek slowed+reverb loop hai isliye 1-2 second ka farq
@@ -397,10 +411,12 @@
       musicBtn.textContent = '🔊';
       musicBtn.classList.add('spinning');
       musicOn = true;
-    }).catch(()=>{
+      musicDebug.style.display='none';
+    }).catch((err)=>{
       // browser blocked autoplay; user can tap the music button
       musicBtn.textContent = '🔈';
       musicOn = false;
+      showDebug('Play nahi ho paya: ' + (err && err.name ? err.name : err));
     });
   }
 
